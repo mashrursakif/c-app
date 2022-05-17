@@ -13,7 +13,6 @@ const Logout = () => {
 		localStorage.removeItem('token');
 		dispatch(setUser({ id: '' }));
 		router.push('/');
-		delete axios.defaults.headers.common['Authorization'];
 	}, []);
 
 	return (

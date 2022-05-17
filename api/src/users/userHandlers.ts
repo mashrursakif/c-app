@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { UserModel } from '../types';
 import app from '../app';
 import express, { Router, Response, Request } from 'express';
-import { secureParams, formatErr } from '../helpers';
+import { secureParams, formatErr, auth } from '../helpers';
 
 interface UserArgs {
 	email: string;
@@ -36,6 +36,16 @@ const login = async (req: Request, res: Response) => {
 	}
 };
 
+const getUser = async (req: Request, res: Response) => {
+	try {
+		const user = auth(req.headers.authorization);
+
+		res.send({ user });
+	} catch (err) {
+		console.log(err);
+	}
+};
+
 const createUser = async (req: Request, res: Response) => {
 	try {
 		const user = new User(userParams(req.body.userData));
@@ -54,7 +64,8 @@ const createUser = async (req: Request, res: Response) => {
 
 const updateUser = async (req: Request, res: Response) => {
 	try {
-		const user = await User.findOne({ _id: req.body._id });
+		const user = await auth(req.headers.authorization);
+		// const user = await User.findOne({ _id: req.body._id });
 
 		Object.assign(user, req.body.userData);
 		await user?.save();
@@ -66,6 +77,7 @@ const updateUser = async (req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response) => {
 	try {
+		await auth(req.headers.authorization);
 		const user = await User.deleteOne({ _id: req.body._id });
 
 		res.send({ user });
@@ -89,12 +101,6 @@ const userParams = (args: UserArgs) => {
 		'lastName',
 		'country'
 	]);
-};
-
-const getUser = async (req: Request, res: Response) => {
-	console.log(req);
-	const a = JSON.stringify({ hello: 'hello' });
-	res.send(a);
 };
 
 const router = express.Router();

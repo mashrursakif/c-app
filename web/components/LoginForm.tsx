@@ -16,7 +16,7 @@ interface LoginData {
   category?: string;
 }
 
-const LoginForm = ({ show, hideForm }: Props) => {
+const LoginForm = ({ show = true, hideForm }: Props) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -54,7 +54,7 @@ const LoginForm = ({ show, hideForm }: Props) => {
 
   return (
     <div className={`${show ? '' : 'hide'}`}>
-      <button className="" onClick={() => hideForm?.()}>
+      <button className={`${show ? 'hide' : ''}`} onClick={() => hideForm?.()}>
         x
       </button>
       <h1>Login</h1>
