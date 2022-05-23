@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 export interface UserModel extends mongoose.Document {
+  email: string;
+  password: string;
   username: string;
   firstName: string;
   lastName: string;

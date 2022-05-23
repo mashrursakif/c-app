@@ -38,7 +38,10 @@ const login = async (req: Request, res: Response) => {
 
 const getUser = async (req: Request, res: Response) => {
 	try {
-		const user = auth(req.headers.authorization);
+		const user = await auth(req.headers.authorization);
+    // const { __v, createdAt, updatedAt, ...rest} = user;
+    const u = await User.findOne({ email: 'a@b.com' });
+    console.log(u);
 
 		res.send({ user });
 	} catch (err) {

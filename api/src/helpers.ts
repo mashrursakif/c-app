@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import User from './users/User';
+import { UserModel } from './types';
 
 export const secureParams = (
   args: Record<string, unknown>,
@@ -39,6 +40,10 @@ export const formatErr = (err: any) => {
   }
 };
 
+// interface Auth {
+//   function(header?: string): UserModel;
+// }
+type Auth = (header?: string) => UserModel;
 export const auth = async (header?: string) => {
   if (!header) throw 'auth';
   const token = header.split(' ')[1];
@@ -52,3 +57,10 @@ export const auth = async (header?: string) => {
     throw 'auth';
   }
 };
+
+
+type A = (p: string) => string;
+const a: A = (p: string) => {
+  return 'cat';
+}
+const t =  a('p');

@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.methods.validPassword = async function (password: string) {
 	try {
-		const result = await bcrypt.compare(password, this.password);
+		const result = await bcrypt.compare(password, (this as UserModel).password);
 		return result;
 	} catch {
 		return false;
@@ -42,7 +42,7 @@ userSchema.methods.validPassword = async function (password: string) {
 };
 
 userSchema.methods.hashPassword = async function () {
-	this.password = await bcrypt.hash(this.password, 8);
+  (this as UserModel).password = await bcrypt.hash((this as UserModel).password, 8);
 };
 
 const User = mongoose.model<UserModel>('User', userSchema);

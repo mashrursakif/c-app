@@ -16,7 +16,7 @@ node_modules
 out
 .vercel
 
-# Production Builds
+# Production builds
 build
 
 # Testing
@@ -28,7 +28,7 @@ workbox-*.js*
 
 # Back-end assets
 content
-seed.jjs
+seed.js
 
 # Logs
 npm-debug.log*
