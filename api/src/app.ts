@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Response, Request } from 'express';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import morgan from 'morgan';
@@ -6,6 +6,7 @@ import cors from 'cors';
 import http from 'http';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { auth } from './helpers';
 
 dotenv.config({ path: 'src/.env' });
 
@@ -37,11 +38,34 @@ const server = http.createServer(app);
 // Routes
 import setRoutes from './routes';
 
-app.get('/', (req, res) => {
-	const a = JSON.stringify({ hi: 'hi' });
-	res.send(a);
-});
+/* 
 
+req.body = {
+  data: {
+    links: ['lksdjfk/ksdj', 'lkklsjdf/ei/kdljf']
+  }
+}
+
+*/
+import path from 'path';
+app.get('/image', async (req: Request, res: Response) => {
+	try {
+    await auth(req.headers.authorization);
+
+    const list = [];
+    // const links = req.body.data.links;
+
+    // links.map((l) => {
+
+    // })
+    const link = 'uploads/62920f92c26d0c2d67bbad03/testimage.jpg';
+    res.sendFile(link, {
+      root: path.join(__dirname)
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
 setRoutes(app);
 
 // Catch 404 errors

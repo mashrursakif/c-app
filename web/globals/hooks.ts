@@ -1,4 +1,7 @@
-import axios, { Method } from 'axios';
+import axios, { Method, ResponseType } from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/slices/userSlice';
+import { useRouter } from 'next/router';
 
 export const useAuthHeader = () => {
   const token =
@@ -16,22 +19,23 @@ export const useAuthHeader = () => {
 interface UseApiParams {
   method: Method;
   url: string;
-  data?: any
+  data?: any;
+  responseType?: ResponseType;
 }
 
-export const useApi = async (params: UseApiParams) => {
-  // const res = await axios({
-  //   method,
-  //   url,
-  //   data
-  // })
-  const token = sessionStorage.getItem('token');
+export const useApi = async (
+  params: UseApiParams,
+  headers?: Record<string, string>
+) => {
+  const token =
+    sessionStorage.getItem('token') || localStorage.getItem('token');
   const res = await axios({
     ...params,
     headers: {
-      'Authorization': 'Bearer ' + token
-    }
-  })
+      ...headers,
+      Authorization: 'Bearer ' + token,
+    },
+  });
 
   return res;
-}
+};

@@ -2928,6 +2928,21 @@
   dependencies:
     "flat-cache" "^3.0.4"
 
+"file-match@^1.0.1":
+  "integrity" "sha512-g9p6bZV3HlSUM35QPvFWiP/PckDVe5jLPDhx6PfMuy06o+htesJTyDu7zRdXnOm3BY8pXmxb+QY5qIcsoWMGNg=="
+  "resolved" "https://registry.npmjs.org/file-match/-/file-match-1.0.2.tgz"
+  "version" "1.0.2"
+  dependencies:
+    "utils-extend" "^1.0.6"
+
+"file-system@^2.2.2":
+  "integrity" "sha512-YgbXEVCu21CfmoeJ1rFLVLPGhW9o7iCzVFqk7ydy2TxF7rXH2YB68CFgDXLOvTD2pMLtg8paVqurzVjxGRdYmw=="
+  "resolved" "https://registry.npmjs.org/file-system/-/file-system-2.2.2.tgz"
+  "version" "2.2.2"
+  dependencies:
+    "file-match" "^1.0.1"
+    "utils-extend" "^1.0.4"
+
 "fill-range@^4.0.0":
   "integrity" "sha1-1USBHUKPmOsGpj3EAtJAPDKMOPc="
   "resolved" "https://registry.npmjs.org/fill-range/-/fill-range-4.0.0.tgz"
@@ -3002,6 +3017,15 @@
   "integrity" "sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg=="
   "resolved" "https://registry.npmjs.org/form-data/-/form-data-3.0.1.tgz"
   "version" "3.0.1"
+  dependencies:
+    "asynckit" "^0.4.0"
+    "combined-stream" "^1.0.8"
+    "mime-types" "^2.1.12"
+
+"form-data@^4.0.0":
+  "integrity" "sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww=="
+  "resolved" "https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz"
+  "version" "4.0.0"
   dependencies:
     "asynckit" "^0.4.0"
     "combined-stream" "^1.0.8"
@@ -6671,6 +6695,11 @@
   "version" "0.10.3"
   dependencies:
     "inherits" "2.0.1"
+
+"utils-extend@^1.0.4", "utils-extend@^1.0.6":
+  "integrity" "sha1-zP17ZFQPjpDuIe7Fd2nQZRyril8="
+  "resolved" "https://registry.npmjs.org/utils-extend/-/utils-extend-1.0.8.tgz"
+  "version" "1.0.8"
 
 "uuid@^8.3.0":
   "integrity" "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg=="

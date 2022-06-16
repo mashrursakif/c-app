@@ -5,111 +5,124 @@ import { UserModel } from '../../globals/types';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/userSlice';
+import { useApi } from '../../globals/hooks';
 
-interface UserData {
+interface EditData {
 	user?: UserModel;
-	token?: string;
 	errors?: Record<string, string>;
 }
 
-const NewUser = () => {
+const Profile = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 
-	const [newUser, setNewUser] = useState({
+	const userObject = {
 		username: '',
 		email: '',
 		password: '',
 		firstName: '',
 		lastName: '',
 		country: '',
-	});
-	const [userData, setUserData] = useState<UserData>({});
+		image: '',
+	};
+
+	const [user, setUser] = useState(userObject);
+	const [editData, setEditData] = useState<EditData>({});
+
+	// Get User
+	useEffect(() => {
+		(async () => {
+			// const res = await axios.get('/users');
+			const res = await useApi({
+				method: 'GET',
+				url: '/users',
+			});
+			if (res.data) setUser(res.data.user);
+		})();
+	}, []);
 
 	useEffect(() => {
-		if (userData?.user && userData?.token) {
-			// Add Login Function
-			console.log('Created new user');
-			let storage = sessionStorage;
-			storage.setItem('token', userData.token);
-			dispatch(setUser({ id: userData.user._id }));
-			// router.push('/home');
+		if (editData?.user) {
 			router.push('/profile');
 		}
-	}, [userData]);
+	}, [editData]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const s = { ...newUser };
+		const s = { ...user };
 		s[e.target.name as keyof typeof s] = e.target.value;
-		setNewUser(s);
+		setUser(s);
 	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const res = await axios.post('/users/create', { userData: newUser });
-		console.log(res);
-		setUserData(res.data);
+
+		const res = await useApi({
+			method: 'POST',
+			url: '/users/update',
+			data: { userData: user },
+		});
+		setEditData(res.data);
 	};
 
 	return (
 		<div>
-			<h1>Create New Account</h1>
+			<h1>Edit Profile</h1>
+
 			<form onSubmit={handleSubmit}>
 				<div className="">
 					<label htmlFor="username">Username</label>
 					<br />
 					<input
 						type="username"
+						value={user.username}
 						id="username"
 						name="username"
 						onChange={handleChange}
 					/>
-					<p className="err-msg">{userData.errors?.['username'] || ''}</p>
+					<p className="err-msg">{editData.errors?.['username'] || ''}</p>
 				</div>
 				<div className="">
 					<label htmlFor="email">Email</label>
 					<br />
-					<input type="email" id="email" name="email" onChange={handleChange} />
-					<p className="err-msg">{userData.errors?.['email'] || ''}</p>
-				</div>
-				<div className="">
-					<label htmlFor="password">Password</label>
-					<br />
 					<input
-						type="password"
-						id="password"
-						name="password"
+						type="email"
+						value={user.email}
+						id="email"
+						name="email"
 						onChange={handleChange}
 					/>
-					<p className="err-msg">{userData.errors?.['password'] || ''}</p>
+					<p className="err-msg">{editData.errors?.['email'] || ''}</p>
 				</div>
 				<div className="">
 					<label htmlFor="firstName">First Name</label>
 					<br />
 					<input
 						type="firstName"
+						value={user.firstName}
 						id="firstName"
 						name="firstName"
 						onChange={handleChange}
 					/>
-					<p className="err-msg">{userData.errors?.['firstName'] || ''}</p>
+					<p className="err-msg">{editData.errors?.['firstName'] || ''}</p>
 				</div>
 				<div className="">
 					<label htmlFor="lastName">Last Name</label>
 					<br />
 					<input
 						type="lastName"
+						value={user.lastName}
 						id="lastName"
 						name="lastName"
 						onChange={handleChange}
 					/>
-					<p className="err-msg">{userData.errors?.['lastName'] || ''}</p>
+					<p className="err-msg">{editData.errors?.['lastName'] || ''}</p>
 				</div>
 				<div className="">
 					<label htmlFor="country">Country</label>
 					<br />
 					<input
 						type="country"
+						value={user.country}
 						id="country"
 						name="country"
 						onChange={handleChange}
@@ -121,11 +134,8 @@ const NewUser = () => {
 					</button>
 				</div>
 			</form>
-			<Link href="/login">
-				<a>Login with existing account</a>
-			</Link>
 		</div>
 	);
 };
 
-export default NewUser;
+export default Profile;

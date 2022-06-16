@@ -6,10 +6,15 @@ export interface UserModel extends mongoose.Document {
   username: string;
   firstName: string;
   lastName: string;
-  country: string;
+  country?: string;
+  imagePath?: string;
 
   hashPassword(): string;
   validPassword(password: string): boolean;
+}
+
+export interface ResUserModel extends Omit<UserModel, 'password'> {
+  password?: string;
 }
 
 export interface CatModel extends mongoose.Document {
@@ -17,4 +22,6 @@ export interface CatModel extends mongoose.Document {
   age?: string;
   breed?: string;
   description?: string;
+  imagePath: string;
+  userId: string;
 }

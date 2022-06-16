@@ -15,4 +15,5 @@ export interface UserModel {
   firstName: string;
   lastName: string;
   country: string;
+  image: string;
 }

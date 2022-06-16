@@ -27,6 +27,9 @@ const userSchema = new mongoose.Schema(
 		},
 		country: {
 			type: String
+		},
+		imagePath: {
+			type: String
 		}
 	},
 	{ timestamps: true }
@@ -42,7 +45,10 @@ userSchema.methods.validPassword = async function (password: string) {
 };
 
 userSchema.methods.hashPassword = async function () {
-  (this as UserModel).password = await bcrypt.hash((this as UserModel).password, 8);
+	(this as UserModel).password = await bcrypt.hash(
+		(this as UserModel).password,
+		8
+	);
 };
 
 const User = mongoose.model<UserModel>('User', userSchema);

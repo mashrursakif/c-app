@@ -17,7 +17,7 @@ const Home = () => {
 
 	return (
 		<div>
-			<h1>Welcome to Cookie Cat</h1>
+			<h1>Welcome</h1>
 		</div>
 	);
 };
