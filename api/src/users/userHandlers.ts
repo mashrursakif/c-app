@@ -3,14 +3,9 @@ import jwt from 'jsonwebtoken';
 import { UserModel, ResUserModel } from '../types';
 import app from '../app';
 import express, { Router, Response, Request } from 'express';
-import {
-	secureParams,
-	formatErr,
-	auth,
-	uploadCallback,
-	moveFile
-} from '../helpers';
+import { secureParams, formatErr, auth, moveFile } from '../helpers';
 import multer from 'multer';
+import path from 'path';
 
 interface UserArgs {
 	email: string;
@@ -45,12 +40,14 @@ const login = async (req: Request, res: Response) => {
 
 const getUser = async (req: Request, res: Response) => {
 	try {
-		const user = await auth(req.headers.authorization);
+		const user = (await auth(req.headers.authorization)) as ResUserModel;
 		// const { __v, createdAt, updatedAt, ...rest} = user;
-		delete (user as ResUserModel).password;
-		console.log('GETUSER  ', user);
+		delete user.password;
+		const resUser = JSON.parse(JSON.stringify(user));
+		Object.assign(resUser, { fullName: await user.fullName });
+		console.log('GETUSER  ', resUser);
 
-		res.send({ user });
+		res.send({ user: resUser });
 	} catch (err) {
 		console.log(err);
 	}
@@ -67,10 +64,8 @@ const createUser = async (req: Request, res: Response) => {
 
 		const token = jwt.sign(user._id.toString(), process.env.JWT_SEC as string);
 
-		console.log('REQ   ', user);
 		res.send({ user, token });
 	} catch (err) {
-		console.log('ERR  ', formatErr(err));
 		res.send(formatErr(err));
 	}
 };
@@ -93,9 +88,10 @@ const uploadImg = async (req: Request, res: Response) => {
 		// move file
 		const dir = `${user._id}`;
 		const filename = 'profile-img.jpg';
-		await moveFile(dir, filename);
+		const imgPath = `${dir}/${filename}`;
+		await moveFile(dir, filename, 128);
 
-		user.imagePath = `${dir}/${filename}`;
+		user.imagePath = imgPath;
 
 		await user.save();
 		res.send({ user });
@@ -116,8 +112,8 @@ const deleteUser = async (req: Request, res: Response) => {
 };
 
 // const a = async () => {
-// const u = await User.deleteMany({});
-// console.log('//  ', u);
+// 	const u = await User.deleteMany({});
+// 	console.log('//  ', u);
 // };
 // a();
 

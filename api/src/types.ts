@@ -15,6 +15,7 @@ export interface UserModel extends mongoose.Document {
 
 export interface ResUserModel extends Omit<UserModel, 'password'> {
   password?: string;
+  fullName?: string;
 }
 
 export interface CatModel extends mongoose.Document {

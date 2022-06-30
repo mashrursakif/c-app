@@ -20,6 +20,7 @@ interface UseApiParams {
   method: Method;
   url: string;
   data?: any;
+  params?: any;
   responseType?: ResponseType;
 }
 

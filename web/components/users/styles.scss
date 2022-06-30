@@ -1,0 +1,30 @@
+.form-con {
+	h1 {
+		font-family: sans-serif;
+		font-weight: lighter;
+		font-size: 1.6rem;
+		color: #00bcd4;
+	}
+
+	label {
+		color: #424242;
+	}
+}
+
+.rememberMe {
+	input {
+		margin: 0;
+	}
+	label {
+		margin-left: 0.4rem;
+	}
+}
+
+.MuiGrid-item.input-con {
+	margin-bottom: 0.4rem;
+}
+
+.background {
+	// background-image: url('../../public/home-background.jpg');
+	background: linear-gradient(45deg, #00bcd4, #afa2ee);
+}

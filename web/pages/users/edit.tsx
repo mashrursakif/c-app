@@ -32,7 +32,6 @@ const Profile = () => {
 	// Get User
 	useEffect(() => {
 		(async () => {
-			// const res = await axios.get('/users');
 			const res = await useApi({
 				method: 'GET',
 				url: '/users',

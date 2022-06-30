@@ -11,7 +11,6 @@ const Home = () => {
 				url: '/users/',
 			});
 			setUser(res.data.user);
-			console.log(res);
 		})();
 	}, []);
 

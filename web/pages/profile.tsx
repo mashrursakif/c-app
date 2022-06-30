@@ -1,68 +1,82 @@
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import axios from 'axios';
 import FormData from 'form-data';
 import { useApi } from '../globals/hooks';
+import { UserModel } from '../globals/types';
+
+import Sidebar from '../components/Sidebar';
+import Link from 'next/link';
 import EditProfileImage from '../components/users/EditProfileImage';
+import { Grid } from '@mui/material';
+
+import { FaUser, FaImage } from 'react-icons/fa';
 
 interface State {
 	[index: string]: any;
 }
 const Profile = () => {
-	const [img, setImg] = useState<File>();
-	const [data, setData] = useState({
-		name: '',
-	});
+	const [img, setImg] = useState('');
+	const [user, setUser] = useState<UserModel>();
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const s = { ...data };
-		if (e.target.type === 'file') {
-			setImg(e.target.files?.[0]);
-		} else {
-			s[e.target.name as keyof typeof s] = e.target.value;
-		}
-		setData(s);
-		// console.log('CHANGE  ', img);
-	};
+	useEffect(() => {
+		(async () => {
+			const res = await useApi({
+				method: 'GET',
+				url: '/users/',
+			});
+			setUser(res.data.user);
+		})();
+	}, []);
 
-	// FIX:
-	// MULTIPART DATA AND JSON CANNOT BE SENT IN SAME REQUEST
-
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		console.log('SUBMIT  ', data);
-		const form = new FormData();
-		form.append('file', img);
-		form.append('userData', data);
-		// const res = await useApi(
-		// 	{
-		// 		method: 'POST',
-		// 		url: '/users/update',
-		// 		data: form,
-		// 	},
-		// 	{ 'Content-Type': 'multipart/form-data' }
-		// );
-		const token =
-			sessionStorage.getItem('token') || localStorage.getItem('token');
-		const res = await axios.post('/users/update', form, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				Authorization: 'Bearer ' + token,
-			},
-		});
-		console.log(res);
-	};
+	useEffect(() => {
+		(async () => {
+			if (user?._id && user.imagePath) {
+				const res = await useApi({
+					method: 'GET',
+					url: '/image',
+					params: {
+						path: user.imagePath,
+					},
+					responseType: 'blob',
+				});
+				if (res.data) {
+					const reader = new FileReader();
+					reader.onload = () => {
+						setImg(reader.result as string);
+					};
+					reader.readAsDataURL(res.data);
+				}
+			}
+		})();
+	}, [user]);
 
 	return (
-		<div>
-			<h1>Customize Your Profile</h1>
-			<Link href="/users/edit">
-				<a>Edit Profile</a>
-			</Link>
+		<>
+			<Sidebar />
+			<div className="container">
+				<h1>Customize Your Profile</h1>
+				<Link href="/users/edit">
+					<a>Edit Profile</a>
+				</Link>
 
-			<h1>IMAGE</h1>
-			<EditProfileImage />
-		</div>
+				<Grid container justifyContent="center">
+					<Grid item>
+						<div className="edit-image-con">
+							<img className="profile-image" src={img || '/image-icon.png'} />
+							<EditProfileImage
+								currentImage={img || '/image-icon.png'}
+								setImage={setImg}
+							/>
+						</div>
+					</Grid>
+				</Grid>
+				<Grid container justifyContent="center" alignItems="center" spacing={2}>
+					<Grid item>
+						<h2 className="font-12 mt-12">{user?.fullName || 'loadng...'}</h2>
+					</Grid>
+				</Grid>
+			</div>
+		</>
 	);
 };
 

@@ -7,32 +7,32 @@ import LoginForm from '../components/LoginForm';
 import { useRouter } from 'next/router';
 
 const Index = () => {
-  const router = useRouter();
+	const router = useRouter();
 
-  useEffect(() => {
-    const token =
-      sessionStorage.getItem('token') || localStorage.getItem('token');
-    if (token) {
-      router.push('/home');
-    }
-  }, []);
+	useEffect(() => {
+		const token =
+			sessionStorage.getItem('token') || localStorage.getItem('token');
+		if (token) {
+			router.push('/home');
+		}
+	}, []);
 
-  const [showLogin, setShowLogin] = useState(false);
+	const [showLogin, setShowLogin] = useState(false);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    setShowLogin(true);
-  };
+	const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+		// e.preventDefault();
+		// setShowLogin(true);
+	};
 
-  return (
-    <div>
-      <h1>Next.js</h1>
-      <a href="/login" onClick={handleClick}>
-        Login
-      </a>
-      <LoginForm show={showLogin} hideForm={() => setShowLogin(false)} />
-    </div>
-  );
+	return (
+		<div>
+			<h1>Next.js</h1>
+			<a href="/login" onClick={handleClick}>
+				Login
+			</a>
+			<LoginForm show={showLogin} hideForm={() => setShowLogin(false)} />
+		</div>
+	);
 };
 
 export default Index;
