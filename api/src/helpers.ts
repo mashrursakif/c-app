@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import User from './users/User';
 import { UserModel } from './types';
 import { NextFunction } from 'express';
-import fse from 'fs-extra';
-import sharp, { FormatEnum } from 'sharp';
+// import fse from 'fs-extra';
+// import sharp, { FormatEnum } from 'sharp';
 
 export const secureParams = (
   args: Record<string, unknown>,
@@ -61,62 +61,64 @@ export const auth = async (header?: string) => {
   }
 };
 
+// temp removal, CONFIGURING CLOUDINARY
+
 // transform file using sharp
 // Resize or Format Image, then returns buffer or writes to file
-interface TransformProps {
-  resize?: {
-    width: number;
-    height: number;
-  };
-  format?: keyof FormatEnum;
-  newPath?: string;
-}
-export const transform = async (path: string, props: TransformProps = {}) => {
-  try {
-    const { resize, format, newPath } = props;
-    const buf = await sharp(path);
+// interface TransformProps {
+//   resize?: {
+//     width: number;
+//     height: number;
+//   };
+//   format?: keyof FormatEnum;
+//   newPath?: string;
+// }
+// export const transform = async (path: string, props: TransformProps = {}) => {
+//   try {
+//     const { resize, format, newPath } = props;
+//     const buf = await sharp(path);
 
-    if (resize) {
-      buf.resize(resize);
-    } else {
-      // buf.resize({ width: 40, height: 40 });
-    }
-    if (format) buf.toFormat(format);
+//     if (resize) {
+//       buf.resize(resize);
+//     } else {
+//       // buf.resize({ width: 40, height: 40 });
+//     }
+//     if (format) buf.toFormat(format);
 
-    // if newPath is present save the file
-    if (newPath) {
-      // ensureFile checks if file exists, if not file is created
-      await fse.ensureFile(newPath);
-      return buf.toFile(newPath);
-    }
-    // else return buffer;
-    return buf.toBuffer();
-  } catch (err) {
-    console.log(err);
-  }
-};
+//     // if newPath is present save the file
+//     if (newPath) {
+//       // ensureFile checks if file exists, if not file is created
+//       await fse.ensureFile(newPath);
+//       return buf.toFile(newPath);
+//     }
+//     // else return buffer;
+//     return buf.toBuffer();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
-export const moveFile = async (
-  dir: string,
-  filename: string,
-  size?: number
-) => {
-  try {
-    const oldPath = `src/uploads/temp/${filename}`;
-    const newPath = `src/uploads/${dir}/${filename}`;
+// export const moveFile = async (
+//   dir: string,
+//   filename: string,
+//   size?: number
+// ) => {
+//   try {
+//     const oldPath = `src/uploads/temp/${filename}`;
+//     const newPath = `src/uploads/${dir}/${filename}`;
 
-    let resize = undefined;
+//     let resize = undefined;
 
-    if (size) resize = { width: size, height: size };
+//     if (size) resize = { width: size, height: size };
 
-    const buffer = await transform(oldPath, {
-      newPath,
-      resize
-    });
+//     const buffer = await transform(oldPath, {
+//       newPath,
+//       resize
+//     });
 
-    await fse.remove(oldPath);
-  } catch (err) {
-    console.log('MOVEFILE-ERR  ', err);
-    return err;
-  }
-};
+//     await fse.remove(oldPath);
+//   } catch (err) {
+//     console.log('MOVEFILE-ERR  ', err);
+//     return err;
+//   }
+// };

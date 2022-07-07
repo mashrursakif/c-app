@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import { UserModel, ResUserModel } from '../types';
 import app from '../app';
 import express, { Router, Response, Request } from 'express';
-import { secureParams, formatErr, auth, moveFile } from '../helpers';
+import { secureParams, formatErr, auth } from '../helpers';
 import multer from 'multer';
-import path from 'path';
+// import path from 'path';
 
 interface UserArgs {
 	email: string;
@@ -134,17 +134,48 @@ router.get('/', getUser);
 router.post('/login', login);
 router.post('/create', createUser);
 
-// UPDATE
-const profileStorage = multer.diskStorage({
-	destination: 'src/uploads/temp',
-	filename: (req, file, cb) => {
-		cb(null, 'profile-img.jpg');
+const upload = multer();
+
+import { v2 as cloudinary } from 'cloudinary';
+
+router.post(
+	'/profile-img',
+	upload.any(),
+	async (req: Request, res: Response) => {
+		try {
+			const user = await auth(req.headers.authorization);
+			console.log(req.files);
+			if (req.files) {
+				const file = (req.files as any)?.[0];
+
+				const dir = `c-app/users/${user.id}`;
+
+				cloudinary.uploader.upload(file, { folder: dir }, (error, result) => {
+					console.log(error, result);
+				});
+				user.imageUrl = '';
+
+				res.send({ value: 'success' });
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
-});
-const profileUpload = multer({ storage: profileStorage });
+);
+
+// UPDATE
+// const profileStorage = multer.diskStorage({
+// 	destination: 'src/uploads/temp',
+// 	filename: (req, file, cb) => {
+// 		cb(null, 'profile-img.jpg');
+// 	}
+// });
+// const profileUpload = multer({ storage: profileStorage });
 
 router.post('/update', updateUser);
-router.post('/profile-img', profileUpload.single('profile-img'), uploadImg);
+// temporary change until cloudinary is configured
+// router.post('/profile-img', profileUpload.single('profile-img'), uploadImg);
+router.post('/profile-img', uploadImg);
 router.post('/delete', deleteUser);
 //
 

@@ -28,27 +28,27 @@ const Profile = () => {
 		})();
 	}, []);
 
-	useEffect(() => {
-		(async () => {
-			if (user?._id && user.imagePath) {
-				const res = await useApi({
-					method: 'GET',
-					url: '/image',
-					params: {
-						path: user.imagePath,
-					},
-					responseType: 'blob',
-				});
-				if (res.data) {
-					const reader = new FileReader();
-					reader.onload = () => {
-						setImg(reader.result as string);
-					};
-					reader.readAsDataURL(res.data);
-				}
-			}
-		})();
-	}, [user]);
+	// useEffect(() => {
+	// 	(async () => {
+	// 		if (user?._id && user.imagePath) {
+	// 			const res = await useApi({
+	// 				method: 'GET',
+	// 				url: '/image',
+	// 				params: {
+	// 					path: user.imagePath,
+	// 				},
+	// 				responseType: 'blob',
+	// 			});
+	// 			if (res.data) {
+	// 				const reader = new FileReader();
+	// 				reader.onload = () => {
+	// 					setImg(reader.result as string);
+	// 				};
+	// 				reader.readAsDataURL(res.data);
+	// 			}
+	// 		}
+	// 	})();
+	// }, [user]);
 
 	return (
 		<>

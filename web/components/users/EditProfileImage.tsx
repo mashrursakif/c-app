@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FormData from 'form-data';
-import { useApi } from '../../globals/hooks';
+import { useApi, resizeFile } from '../../globals/hooks';
+import { useSelector } from 'react-redux';
+import { getUser } from '../../redux/slices/userSlice';
 
 import { Modal, Fade, Backdrop, Grid } from '@mui/material';
 import { FaPenAlt } from 'react-icons/fa';
@@ -11,6 +13,8 @@ interface Props {
 	setImage(imgUrl: string): void;
 }
 const EditProfileImage = ({ currentImage, setImage }: Props) => {
+	const user = useSelector(getUser);
+
 	const [file, setFile] = useState<File>();
 	const [imgUrl, setImgUrl] = useState<string>('');
 	const [imgName, setImgName] = useState<string>();
@@ -31,23 +35,19 @@ const EditProfileImage = ({ currentImage, setImage }: Props) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		// const dir = `c-app/users/${user.id}`;
+
 		const form = new FormData();
-		form.append('profile-img', file);
-		const res = await useApi(
-			{
-				method: 'POST',
-				url: '/users/profile-img',
-				data: form,
-			},
-			{ 'Content-Type': 'multipart/form-data' }
-		);
-		const imagePath = res.data.user.imagePath;
-		if (!imagePath || imagePath !== '') {
-			setImage(imgUrl);
-			handleClose();
-		} else {
-			setError('Error, unable to save file');
-		}
+		form.append('file', file);
+
+		const res = await useApi({
+			method: 'POST',
+			url: '/users/profile-img',
+			data: form,
+		});
+
+		console.log(res);
 	};
 
 	const handleOpen = () => {
@@ -132,10 +132,65 @@ const EditProfileImage = ({ currentImage, setImage }: Props) => {
 };
 
 export default EditProfileImage;
-/*<div className={show ? '' : ''}>
-			<img style={{ width: '300px' }} src={imgUrl || ''} />
-			<form onSubmit={handleSubmit}>
-				<input type="file" onChange={handleChange} />
-				<button type="submit">Save</button>
-			</form>
-		</div>*/
+
+/* 
+
+
+	// const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	// 	e.preventDefault();
+	// 	const form = new FormData();
+	// 	form.append('profile-img', file);
+	// 	const res = await useApi(
+	// 		{
+	// 			method: 'POST',
+	// 			url: '/users/profile-img',
+	// 			data: form,
+	// 		},
+	// 		{ 'Content-Type': 'multipart/form-data' }
+	// 	);
+	// 	const imagePath = res.data.user.imagePath;
+	// 	if (!imagePath || imagePath !== '') {
+	// 		setImage(imgUrl);
+	// 		handleClose();
+	// 	} else {
+	// 		setError('Error, unable to save file');
+	// 	}
+	// };
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		const dir = `c-app/users/${user.id}`;
+
+		// get Cloudinary sign data
+		const r = await axios.get('/upload-auth', { params: { dir } });
+		const signData = r.data;
+
+		if (!signData.signature) console.log('ERROR!!!');
+
+		// Resize the image
+		const f = await resizeFile(file as File);
+		console.log('RESIZED   ', f);
+		const form = new FormData();
+		form.append('file', f);
+		form.append('api_key', signData?.apiKey);
+		form.append('timestamp', signData?.timestamp);
+		form.append('signature', signData?.signature);
+		form.append('folder', dir);
+
+		const res = await axios({
+			method: 'POST',
+			url:
+				'https://api.cloudinary.com/v1_1/' +
+				signData.cloudname +
+				'/auto/upload',
+			data: form,
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
+
+		console.log(res);
+	};
+
+*/

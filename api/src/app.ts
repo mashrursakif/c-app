@@ -38,7 +38,7 @@ const server = http.createServer(app);
 // Routes
 import setRoutes from './routes';
 
-import path from 'path';
+// import path from 'path';
 // app.get('/image', async (req: Request, res: Response) => {
 //   try {
 //     await auth(req.headers.authorization);
@@ -58,20 +58,52 @@ import path from 'path';
 //   }
 // });
 
-app.get('/image', async (req: Request, res: Response) => {
+// app.get('/image', async (req: Request, res: Response) => {
+//   try {
+//     await auth(req.headers.authorization);
+
+//     console.log('PARAMS  ', req.query);
+//     const link = ('uploads/' + req.query['path']) as string;
+
+//     res.sendFile(link, {
+//       root: path.join(__dirname)
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+// Cloudinary
+import { v2 as cloudinary } from 'cloudinary';
+
+app.get('/upload-auth', async (req: Request, res: Response) => {
   try {
-    await auth(req.headers.authorization);
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    // const config = cloudinary.config();
+    // const apiSecret = config.api_secret as string;
+    const apiSecret = process.env.API_SECRET as string;
 
-    console.log('PARAMS  ', req.query);
-    const link = ('uploads/' + req.query['path']) as string;
+    const signature = cloudinary.utils.api_sign_request(
+      {
+        timestamp,
+        folder: req.query?.dir || ''
+      },
+      apiSecret
+    );
 
-    res.sendFile(link, {
-      root: path.join(__dirname)
-    });
+    const signData = {
+      timestamp,
+      signature,
+      apiKey: process.env.API_KEY,
+      cloudname: process.env.CLOUD_NAME
+    };
+
+    res.send(signData);
   } catch (err) {
     console.log(err);
   }
 });
+
 setRoutes(app);
 
 // Catch 404 errors

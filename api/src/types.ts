@@ -7,7 +7,7 @@ export interface UserModel extends mongoose.Document {
   firstName: string;
   lastName: string;
   country?: string;
-  imagePath?: string;
+  imageUrl?: string;
 
   hashPassword(): string;
   validPassword(password: string): boolean;

@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/slices/userSlice';
 import { useRouter } from 'next/router';
 
+import Resizer from 'react-image-file-resizer';
+
 export const useAuthHeader = () => {
   const token =
     window.sessionStorage.getItem('token') ||
@@ -40,3 +42,19 @@ export const useApi = async (
 
   return res;
 };
+
+export const resizeFile = (file: File) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      'JPEG',
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      'file'
+    );
+  });
